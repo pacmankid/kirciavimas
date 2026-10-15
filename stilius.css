@@ -50,6 +50,8 @@ button { cursor: pointer; }
 .mygtukas:disabled { opacity: .35; cursor: default; }
 .mygtukas.antrinis { background: transparent; color: var(--rasalas); border: 1px solid #CFCBC0; }
 .apacioje { margin-top: auto; }
+.mygtukas.pavojingas { background: var(--klaida); color: #fff; }
+.patvirtinimas { border-color: var(--klaida); background: var(--klaida-fonas); }
 
 /* Eiga */
 .eiga { display: flex; align-items: center; gap: 12px; }

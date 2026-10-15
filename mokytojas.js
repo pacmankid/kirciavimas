@@ -33,7 +33,45 @@ $('atnaujinti').addEventListener('click', async () => {
   try { visi = await gauti(); pildytiKlases(); piesti(); }
   catch (klaida) { alert(klaida.message); }
 });
-$('filtras-klase').addEventListener('change', piesti);
+$('filtras-klase').addEventListener('change', () => { $('patvirtinimas').hidden = true; piesti(); });
+
+// ---------- Valymas ----------
+
+$('valyti').addEventListener('click', () => {
+  const klase = $('filtras-klase').value;
+  const kiek = visi.filter((r) => !klase || r.klase === klase).length;
+  if (!kiek) {
+    $('patv-tekstas').textContent = 'Nėra ką ištrinti.';
+    $('patv-taip').hidden = true;
+  } else {
+    $('patv-tekstas').textContent = klase
+      ? `Ištrinti ${kiek} ${klase} klasės rezultatus?`
+      : `Ištrinti VISUS rezultatus (${kiek})?`;
+    $('patv-taip').hidden = false;
+  }
+  $('patvirtinimas').hidden = false;
+});
+
+$('patv-ne').addEventListener('click', () => ($('patvirtinimas').hidden = true));
+
+$('patv-taip').addEventListener('click', async () => {
+  const mygtukas = $('patv-taip');
+  mygtukas.disabled = true;
+  mygtukas.textContent = 'Trinama…';
+  try {
+    const ats = await siusti({ veiksmas: 'valyti', pin, klase: $('filtras-klase').value });
+    if (!ats.ok) throw new Error(ats.klaida || 'Nepavyko ištrinti');
+    visi = await gauti();
+    $('patvirtinimas').hidden = true;
+    pildytiKlases();
+    piesti();
+  } catch (klaida) {
+    $('patv-tekstas').textContent = klaida.message;
+  } finally {
+    mygtukas.disabled = false;
+    mygtukas.textContent = 'Taip, ištrinti';
+  }
+});
 $('filtras-vardas').addEventListener('input', piesti);
 
 function pildytiKlases() {

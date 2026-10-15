@@ -14,6 +14,7 @@ function doPost(e) {
     const d = JSON.parse(e.postData.contents);
     if (d.veiksmas === 'irasyti') return irasyti(d);
     if (d.veiksmas === 'rezultatai') return rezultatai(d);
+    if (d.veiksmas === 'valyti') return valyti(d);
     return atsakyti({ ok: false, klaida: 'Nežinomas veiksmas' });
   } catch (klaida) {
     return atsakyti({ ok: false, klaida: String(klaida) });
@@ -21,6 +22,16 @@ function doPost(e) {
 }
 
 function irasyti(d) {
+  const uzraktas = LockService.getScriptLock();
+  uzraktas.waitLock(10000);
+  try {
+    return irasytiBeUzrakto(d);
+  } finally {
+    uzraktas.releaseLock();
+  }
+}
+
+function irasytiBeUzrakto(d) {
   const lapas = gautiLapa();
   const atsakymai = Array.isArray(d.atsakymai) ? d.atsakymai.slice(0, 50) : [];
   lapas.appendRow([
@@ -51,6 +62,29 @@ function rezultatai(d) {
     };
   });
   return atsakyti({ ok: true, rezultatai: rez });
+}
+
+// Ištrina rezultatus iš lapo „Rezultatai“. Jei nurodyta klasė, trinami tik jos rezultatai.
+function valyti(d) {
+  if (String(d.pin || '') !== MOKYTOJO_PIN) return atsakyti({ ok: false, klaida: 'Neteisingas PIN' });
+  const uzraktas = LockService.getScriptLock();
+  uzraktas.waitLock(10000);
+  try {
+    const lapas = gautiLapa();
+    const klase = String(d.klase || '').toUpperCase();
+    const visos = lapas.getDataRange().getValues();
+    const stulpeliu = visos[0].length;
+    const eilutes = visos.slice(1);
+    const tinka = function (r) { return !klase || String(r[2]).replace(/^'/, '') === klase; };
+    const trinti = eilutes.filter(tinka);
+    const palikti = eilutes.filter(function (r) { return !tinka(r); });
+
+    if (eilutes.length) lapas.getRange(2, 1, eilutes.length, stulpeliu).clearContent();
+    if (palikti.length) lapas.getRange(2, 1, palikti.length, stulpeliu).setValues(palikti);
+    return atsakyti({ ok: true, istrinta: trinti.length });
+  } finally {
+    uzraktas.releaseLock();
+  }
 }
 
 function gautiLapa() {

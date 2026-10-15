@@ -43,6 +43,11 @@ async function siusti(duomenys) {
       try { localStorage.setItem(DEMO_RAKTAS, JSON.stringify(visi)); } catch {}
       return { ok: true };
     }
+    if (duomenys.veiksmas === 'valyti') {
+      const palikti = duomenys.klase ? visi.filter((r) => String(r.klase).toUpperCase() !== duomenys.klase) : [];
+      try { localStorage.setItem(DEMO_RAKTAS, JSON.stringify(palikti)); } catch {}
+      return { ok: true, istrinta: visi.length - palikti.length };
+    }
     return { ok: true, rezultatai: visi };
   }
   const atsakas = await fetch(SKRIPTO_ADRESAS, {
