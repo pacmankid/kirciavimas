@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="lt">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Kirčiavimo užduotys</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="stilius.css">
+</head>
+<body>
+<main class="puslapis" id="programa">
+
+  <!-- 1. Pradžia -->
+  <section id="pradzia" class="ekranas">
+    <p class="logo">Kirčiuoklis<span>´</span></p>
+    <span class="demo-zyme" id="demo-zyme" hidden>Demo režimas: rezultatai lieka tik šiame kompiuteryje</span>
+    <h1 class="pavadinimas" style="margin-top:24px">Sveikas! Pasitikrinkim kirčiavimą.</h1>
+    <p class="pagalba" style="margin-top:8px">Tavęs laukia 10 užduočių. Rezultatą pamatys mokytojas.</p>
+    <form id="pradzios-forma" class="kortele" style="margin-top:20px; display:flex; flex-direction:column; gap:14px">
+      <div class="laukas">
+        <label for="vardas">Vardas ir pavardės raidė</label>
+        <input id="vardas" autocomplete="off" maxlength="40" placeholder="pvz., Ugnė K." required>
+      </div>
+      <div class="laukas">
+        <label for="klase">Klasė</label>
+        <input id="klase" autocomplete="off" maxlength="10" placeholder="pvz., 5A" required>
+      </div>
+      <button class="mygtukas" type="submit">Pradėti</button>
+    </form>
+  </section>
+
+  <!-- 2. Užduotis -->
+  <section id="uzduotis" class="ekranas" hidden style="display:flex; flex-direction:column; gap:20px; flex:1">
+    <div class="eiga">
+      <div class="eiga-juosta" role="progressbar" aria-label="Eiga" aria-valuemin="0" id="eiga-juosta"><div class="eiga-uzpildas" id="eiga-uzpildas"></div></div>
+      <span class="eiga-tekstas" id="eiga-tekstas"></span>
+    </div>
+    <div class="klausimas">
+      <p class="antraste" id="klausimo-antraste"></p>
+      <p class="pagalba centre" id="klausimo-pagalba"></p>
+    </div>
+    <p class="sakinys" id="sakinys"></p>
+    <div class="skiemenys" id="skiemenys" role="group" aria-label="Skiemenys"></div>
+    <div class="pasirinkimai" id="pasirinkimai" role="group" aria-label="Atsakymai"></div>
+    <p class="atsiliepimas" id="atsiliepimas" aria-live="polite"></p>
+    <button class="mygtukas apacioje" id="toliau" disabled>Tikrinti</button>
+  </section>
+
+  <!-- 3. Rezultatas -->
+  <section id="rezultatas" class="ekranas" hidden style="display:flex; flex-direction:column; gap:18px">
+    <p class="logo">Kirčiuoklis<span>´</span></p>
+    <div class="kortele centre" style="display:flex; flex-direction:column; gap:10px; align-items:center; padding:28px 20px">
+      <p class="antraste">Tavo rezultatas</p>
+      <p class="taskai" id="taskai"></p>
+      <p class="pagalba" id="pagyrimas"></p>
+    </div>
+    <div class="kortele">
+      <p class="antraste" style="margin-bottom:12px">Kodėl taip kirčiuojama</p>
+      <ul class="paaiskinimai" id="paaiskinimai"></ul>
+    </div>
+    <p class="busena" id="siuntimo-busena" aria-live="polite"></p>
+    <button class="mygtukas antrinis" id="is-naujo">Bandyti dar kartą</button>
+  </section>
+
+</main>
+<script src="nustatymai.js"></script>
+<script src="uzduotys.js"></script>
+<script src="bendra.js"></script>
+<script src="mokinys.js"></script>
+</body>
+</html>

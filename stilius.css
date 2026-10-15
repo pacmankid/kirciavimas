@@ -1,0 +1,127 @@
+:root {
+  --fonas: #F6F4EE;
+  --kortele: #FFFFFF;
+  --rasalas: #1A1B20;
+  --pilka: #5B5A55;
+  --linija: #E2DFD6;
+  --akcentas: #2A44C9;
+  --akcentas-tamsus: #1C2F8F;
+  --akcentas-sviesus: #E8ECFB;
+  --gerai: #237A4B;
+  --gerai-fonas: #E3F3EA;
+  --klaida: #B93A0B;
+  --klaida-fonas: #FCE7D6;
+  --serif: 'Source Serif 4', Georgia, serif;
+  --sans: 'IBM Plex Sans', system-ui, sans-serif;
+}
+
+* { box-sizing: border-box; }
+html, body { margin: 0; }
+body { font-family: var(--sans); color: var(--rasalas); background: var(--fonas); min-height: 100vh; }
+button, input, select { font-family: inherit; font-size: inherit; }
+button { cursor: pointer; }
+[hidden] { display: none !important; }
+.paslepta { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
+
+.puslapis { max-width: 560px; margin: 0 auto; padding: 28px 20px 40px; min-height: 100vh; display: flex; flex-direction: column; gap: 18px; }
+.puslapis.platus { max-width: 1040px; }
+
+.logo { margin: 0; font-family: var(--serif); font-size: 30px; font-weight: 600; }
+.logo span { color: var(--akcentas); }
+.pavadinimas { margin: 0; font-family: var(--serif); font-size: 34px; line-height: 1.15; font-weight: 600; }
+.pagalba { margin: 0; font-size: 15px; color: var(--pilka); line-height: 1.5; }
+.antraste { margin: 0; font-size: 13px; font-weight: 600; letter-spacing: .06em; text-transform: uppercase; color: var(--pilka); }
+.centre { text-align: center; }
+
+.kortele { background: var(--kortele); border: 1px solid var(--linija); border-radius: 18px; padding: 20px; }
+
+.laukas { display: flex; flex-direction: column; gap: 6px; }
+.laukas label { font-size: 14px; font-weight: 500; }
+.laukas input, .laukas select {
+  height: 52px; border-radius: 12px; border: 1px solid #CFCBC0; background: #fff; padding: 0 14px; font-size: 17px; color: var(--rasalas);
+}
+.laukas input:focus, .laukas select:focus { outline: 3px solid var(--akcentas-sviesus); border-color: var(--akcentas); }
+.formos-eile { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+
+.mygtukas {
+  height: 56px; border-radius: 16px; border: none; background: var(--rasalas); color: var(--fonas);
+  font-size: 17px; font-weight: 600; padding: 0 22px;
+}
+.mygtukas:disabled { opacity: .35; cursor: default; }
+.mygtukas.antrinis { background: transparent; color: var(--rasalas); border: 1px solid #CFCBC0; }
+.apacioje { margin-top: auto; }
+
+/* Eiga */
+.eiga { display: flex; align-items: center; gap: 12px; }
+.eiga-juosta { flex: 1; height: 10px; background: var(--linija); border-radius: 5px; overflow: hidden; }
+.eiga-uzpildas { height: 100%; background: var(--akcentas); width: 0; transition: width .3s; border-radius: 5px; }
+.eiga-tekstas { font-size: 14px; font-weight: 600; min-width: 44px; text-align: right; }
+
+/* Užduotis */
+.klausimas { display: flex; flex-direction: column; align-items: center; gap: 8px; padding-top: 12px; }
+.sakinys { font-family: var(--serif); font-size: 20px; color: #3C3B37; text-align: center; margin: 0; }
+.skiemenys { display: flex; justify-content: center; gap: 10px; flex-wrap: wrap; }
+.pasirinkimai { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; }
+.pasirinkimai.formos { grid-template-columns: 1fr; }
+
+.plytele {
+  border-radius: 18px; border: 1px solid var(--linija); background: var(--kortele); color: var(--rasalas);
+  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 6px; padding: 10px;
+}
+.skiemenys .plytele { min-width: 84px; height: 88px; font-family: var(--serif); font-size: 38px; }
+.pasirinkimai .plytele { height: 100px; }
+.pasirinkimai.formos .plytele { height: 72px; flex-direction: row; font-family: var(--serif); font-size: 30px; }
+.plytele .forma { font-family: var(--serif); font-size: 32px; line-height: 1; }
+.plytele small { font-size: 13px; color: var(--pilka); }
+.plytele:disabled { cursor: default; }
+.plytele:disabled:not(.pasirinkta):not(.teisingas) { opacity: .4; }
+.pasirinkta { border: 2px solid var(--akcentas); background: var(--akcentas-sviesus); }
+.teisingas { border: 2px solid var(--gerai); background: var(--gerai-fonas); }
+.neteisingas { border: 2px solid var(--klaida); background: var(--klaida-fonas); }
+
+.atsiliepimas { min-height: 28px; text-align: center; font-size: 18px; font-weight: 600; margin: 0; }
+.atsiliepimas.gerai { color: var(--gerai); }
+.atsiliepimas.klaida { color: var(--klaida); }
+.atsiliepimas .forma { font-family: var(--serif); font-size: 22px; }
+
+/* Rezultatas */
+.taskai { font-family: var(--serif); font-size: 76px; font-weight: 600; line-height: 1; margin: 0; }
+.taskai small { font-size: 32px; color: var(--pilka); font-weight: 400; }
+.paaiskinimai { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 10px; }
+.paaiskinimai li { padding: 14px 16px; border-radius: 14px; background: var(--fonas); border-left: 0; }
+.paaiskinimai li.klaida { background: var(--klaida-fonas); }
+.paaiskinimai p { margin: 6px 0 0; font-size: 15px; line-height: 1.55; color: #33322E; }
+.zodzio-eilute { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; flex-wrap: wrap; }
+.zodzio-eilute .forma { font-family: var(--serif); font-size: 26px; font-weight: 600; }
+.zyma { font-size: 13px; font-weight: 600; }
+.zyma.gerai { color: var(--gerai); }
+.zyma.klaida { color: var(--klaida); }
+.zyma s { font-family: var(--serif); font-size: 17px; font-weight: 400; }
+.busena { font-size: 14px; color: var(--pilka); text-align: center; margin: 0; }
+.demo-zyme { align-self: flex-start; font-size: 12px; font-weight: 600; letter-spacing: .05em; text-transform: uppercase; background: #FFF1C2; color: #6B4E00; padding: 4px 10px; border-radius: 999px; }
+
+/* Mokytojas */
+.virsus { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+.filtrai { display: flex; gap: 10px; flex-wrap: wrap; align-items: flex-end; }
+.filtrai .laukas select, .filtrai .laukas input { height: 44px; font-size: 15px; }
+.santrauka { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
+.santrauka .kortele { padding: 16px 18px; }
+.santrauka b { display: block; font-family: var(--serif); font-size: 34px; font-weight: 600; margin-top: 4px; }
+.lenteles-dezute { overflow-x: auto; background: var(--kortele); border: 1px solid var(--linija); border-radius: 16px; }
+table { width: 100%; border-collapse: collapse; font-size: 15px; }
+th { text-align: left; font-size: 12px; text-transform: uppercase; letter-spacing: .05em; color: var(--pilka); background: #EFECE4; padding: 10px 14px; white-space: nowrap; }
+td { padding: 12px 14px; border-top: 1px solid #EEEBE3; vertical-align: top; }
+.juostele { display: flex; align-items: center; gap: 10px; min-width: 150px; }
+.juostele .eiga-juosta { height: 8px; }
+.juostele .eiga-uzpildas { background: var(--gerai); }
+.klaidos-zodziai { font-family: var(--serif); font-size: 17px; color: var(--klaida); }
+.tuscia { padding: 28px; text-align: center; color: var(--pilka); }
+.sunkiausi { list-style: none; margin: 10px 0 0; padding: 0; display: flex; flex-wrap: wrap; gap: 8px; }
+.sunkiausi li { background: var(--klaida-fonas); border-radius: 999px; padding: 6px 12px; font-size: 14px; }
+.sunkiausi b { font-family: var(--serif); font-size: 17px; }
+.klaidos-pranesimas { color: var(--klaida); font-weight: 500; margin: 0; }
+
+@media (max-width: 640px) {
+  .santrauka { grid-template-columns: 1fr; }
+  .pavadinimas { font-size: 28px; }
+}
