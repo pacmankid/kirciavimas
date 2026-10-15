@@ -15,6 +15,9 @@ function doPost(e) {
     if (d.veiksmas === 'irasyti') return irasyti(d);
     if (d.veiksmas === 'rezultatai') return rezultatai(d);
     if (d.veiksmas === 'valyti') return valyti(d);
+    if (d.veiksmas === 'uzduotys') return atsakyti({ ok: true, uzduotys: skaitytiUzduotis().filter(function (u) { return u.patvirtinta; }) });
+    if (d.veiksmas === 'visosUzduotys') return visosUzduotys(d);
+    if (d.veiksmas === 'saugotiUzduotis') return saugotiUzduotis(d);
     return atsakyti({ ok: false, klaida: 'Nežinomas veiksmas' });
   } catch (klaida) {
     return atsakyti({ ok: false, klaida: String(klaida) });
@@ -82,6 +85,60 @@ function valyti(d) {
     if (eilutes.length) lapas.getRange(2, 1, eilutes.length, stulpeliu).clearContent();
     if (palikti.length) lapas.getRange(2, 1, palikti.length, stulpeliu).setValues(palikti);
     return atsakyti({ ok: true, istrinta: trinti.length });
+  } finally {
+    uzraktas.releaseLock();
+  }
+}
+
+// ---------- Užduotys ----------
+// Lapas „Uzduotys“: Žodis (su kirčiu ir brūkšneliais tarp skiemenų, pvz. vã-ka-ras),
+// Sakinys (su ___), Paaiškinimas, Patvirtinta (TAIP / NE).
+
+const LAPAS_U = 'Uzduotys';
+
+function gautiUzduociuLapa() {
+  const ss = SpreadsheetApp.getActiveSpreadsheet();
+  let lapas = ss.getSheetByName(LAPAS_U);
+  if (!lapas) {
+    lapas = ss.insertSheet(LAPAS_U);
+    lapas.appendRow(['Žodis (pvz. vã-ka-ras)', 'Sakinys (su ___)', 'Paaiškinimas', 'Patvirtinta (TAIP/NE)']);
+    lapas.setFrozenRows(1);
+  }
+  return lapas;
+}
+
+function skaitytiUzduotis() {
+  return gautiUzduociuLapa().getDataRange().getValues().slice(1)
+    .filter(function (r) { return String(r[0]).trim(); })
+    .map(function (r) {
+      return {
+        zodis: String(r[0]).trim(),
+        sakinys: String(r[1]),
+        kodel: String(r[2]),
+        patvirtinta: r[3] === true || String(r[3]).trim().toUpperCase() === 'TAIP'
+      };
+    });
+}
+
+function visosUzduotys(d) {
+  if (String(d.pin || '') !== MOKYTOJO_PIN) return atsakyti({ ok: false, klaida: 'Neteisingas PIN' });
+  return atsakyti({ ok: true, uzduotys: skaitytiUzduotis() });
+}
+
+function saugotiUzduotis(d) {
+  if (String(d.pin || '') !== MOKYTOJO_PIN) return atsakyti({ ok: false, klaida: 'Neteisingas PIN' });
+  const sarasas = Array.isArray(d.uzduotys) ? d.uzduotys.slice(0, 500) : [];
+  const uzraktas = LockService.getScriptLock();
+  uzraktas.waitLock(10000);
+  try {
+    const lapas = gautiUzduociuLapa();
+    const senu = lapas.getLastRow() - 1;
+    if (senu > 0) lapas.getRange(2, 1, senu, 4).clearContent();
+    const eilutes = sarasas.map(function (u) {
+      return [tekstas(u.zodis, 60), tekstas(u.sakinys, 200), tekstas(u.kodel, 1000), u.patvirtinta ? 'TAIP' : 'NE'];
+    });
+    if (eilutes.length) lapas.getRange(2, 1, eilutes.length, 4).setValues(eilutes);
+    return atsakyti({ ok: true, issaugota: eilutes.length });
   } finally {
     uzraktas.releaseLock();
   }

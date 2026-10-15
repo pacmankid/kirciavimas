@@ -27,12 +27,20 @@
     </form>
   </section>
 
+  <!-- Skirtukai -->
+  <header id="skirtukai" hidden class="skirtukai-juosta">
+    <p class="logo">Kirčiuoklis<span>´</span></p>
+    <nav class="skirtukai" aria-label="Mokytojo skiltys">
+      <button class="skirtukas aktyvus" data-skiltis="rezultatai" aria-current="page">Rezultatai</button>
+      <button class="skirtukas" data-skiltis="uzduotys">Užduotys <span class="skaicius" id="laukia-zyme" hidden></span></button>
+    </nav>
+  </header>
+
   <!-- Rezultatai -->
   <section id="rezultatai" hidden style="display:flex; flex-direction:column; gap:18px">
     <div class="virsus">
       <div>
-        <p class="logo">Kirčiuoklis<span>´</span></p>
-        <h1 class="pavadinimas" style="font-size:28px; margin-top:6px">Mokinių rezultatai</h1>
+        <h1 class="pavadinimas" style="font-size:28px">Mokinių rezultatai</h1>
       </div>
       <div class="filtrai">
         <div class="laukas">
@@ -78,8 +86,48 @@
     </div>
   </section>
 
+  <!-- Užduotys -->
+  <section id="uzduotys" hidden style="display:flex; flex-direction:column; gap:18px">
+    <div class="virsus">
+      <div>
+        <h1 class="pavadinimas" style="font-size:28px">Užduotys</h1>
+        <p class="pagalba" style="margin-top:6px; max-width:560px">
+          Žodį rašyk su kirčio ženklu ir brūkšneliais tarp skiemenų, pvz. <b class="serif">vã-ka-ras</b>.
+          Mokiniai mato tik <b>patvirtintas</b> užduotis.
+        </p>
+      </div>
+      <div class="filtrai">
+        <div class="laukas">
+          <label for="uzd-filtras">Rodyti</label>
+          <select id="uzd-filtras">
+            <option value="visos">Visas</option>
+            <option value="laukia">Laukia patikrinimo</option>
+            <option value="patvirtintos">Patvirtintas</option>
+          </select>
+        </div>
+        <button class="mygtukas antrinis" id="uzd-nauja" style="height:44px; font-size:15px">+ Nauja užduotis</button>
+      </div>
+    </div>
+
+    <div class="zenklu-juosta kortele" role="toolbar" aria-label="Kirčio ženklai">
+      <span class="pagalba">Įterpti į pažymėtą lauką:</span>
+      <button type="button" data-iterpti="&#x300;" aria-label="Kairinis kirtis (trumpas)">à <small>trumpas</small></button>
+      <button type="button" data-iterpti="&#x301;" aria-label="Dešininis kirtis (tvirtapradė)">á <small>tvirtapradė</small></button>
+      <button type="button" data-iterpti="&#x303;" aria-label="Riestinis kirtis (tvirtagalė)">ã <small>tvirtagalė</small></button>
+      <button type="button" data-iterpti="-" aria-label="Skiemenų brūkšnelis">- <small>skiemuo</small></button>
+    </div>
+
+    <div id="uzd-sarasas" class="uzd-sarasas"></div>
+
+    <div class="saugojimo-juosta" id="saugojimo-juosta">
+      <span id="saugojimo-busena" class="pagalba" aria-live="polite">Pakeitimų nėra</span>
+      <button class="mygtukas" id="uzd-saugoti" disabled>Išsaugoti pakeitimus</button>
+    </div>
+  </section>
+
 </main>
 <script src="nustatymai.js"></script>
+<script src="uzduotys.js"></script>
 <script src="bendra.js"></script>
 <script src="mokytojas.js"></script>
 </body>

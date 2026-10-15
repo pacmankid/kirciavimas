@@ -9,6 +9,33 @@ let patikrinta = false;
 
 if (DEMO) $('demo-zyme').hidden = false;
 
+// ---------- Užduočių įkėlimas ----------
+
+const KIEK = 10;      // kiek užduočių gauna mokinys
+let uzd = [];         // šio bandymo užduotys
+let visosUzd = [];    // visos patvirtintos užduotys
+
+function paruosti(sarasas) {
+  return sarasas
+    .map((u) => ({ ...u, ...isskaidytiZodi(u.zodis) }))
+    .filter((u) => u.ok);
+}
+
+async function ikeltiUzduotis() {
+  const mygtukas = $('pradzios-forma').querySelector('button');
+  mygtukas.disabled = true;
+  try {
+    const ats = await siusti({ veiksmas: 'uzduotys' });
+    visosUzd = ats.ok ? paruosti(ats.uzduotys) : [];
+  } catch {
+    visosUzd = [];
+  }
+  if (!visosUzd.length) visosUzd = paruosti(UZDUOTYS.filter((u) => u.patvirtinta));
+  $('uzd-kiekis').textContent = Math.min(KIEK, visosUzd.length);
+  mygtukas.disabled = false;
+}
+ikeltiUzduotis();
+
 function rodyti(ekranas) {
   ['pradzia', 'uzduotis', 'rezultatas'].forEach((id) => ($(id).hidden = id !== ekranas));
   window.scrollTo(0, 0);
@@ -30,6 +57,7 @@ $('pradzios-forma').addEventListener('submit', (e) => {
   } catch {}
   nr = 0;
   atsakymai = [];
+  uzd = maisyti(visosUzd).slice(0, KIEK);
   rodyti('uzduotis');
   rodytiUzduoti();
 });
@@ -42,12 +70,12 @@ function vietaSkiemenyje(u, i) {
 }
 
 function rodytiUzduoti() {
-  const u = UZDUOTYS[nr];
+  const u = uzd[nr];
   pasSkiem = null; pasPrieg = null; patikrinta = false;
 
-  $('eiga-uzpildas').style.width = (nr / UZDUOTYS.length) * 100 + '%';
-  $('eiga-tekstas').textContent = `${nr + 1}/${UZDUOTYS.length}`;
-  $('eiga-juosta').setAttribute('aria-valuemax', UZDUOTYS.length);
+  $('eiga-uzpildas').style.width = (nr / uzd.length) * 100 + '%';
+  $('eiga-tekstas').textContent = `${nr + 1}/${uzd.length}`;
+  $('eiga-juosta').setAttribute('aria-valuemax', uzd.length);
   $('eiga-juosta').setAttribute('aria-valuenow', nr);
   $('klausimo-antraste').textContent = 'Kur kirtis?';
   $('klausimo-pagalba').textContent = 'Paliesk kirčiuotą skiemenį, tada pasirink priegaidę';
@@ -59,7 +87,7 @@ function rodytiUzduoti() {
 }
 
 function piesti() {
-  const u = UZDUOTYS[nr];
+  const u = uzd[nr];
   const skiemenys = $('skiemenys');
   const pasirinkimai = $('pasirinkimai');
   skiemenys.innerHTML = '';
@@ -98,15 +126,15 @@ function piesti() {
 }
 
 $('toliau').addEventListener('click', () => {
-  const u = UZDUOTYS[nr];
+  const u = uzd[nr];
   if (patikrinta) {
     nr++;
-    if (nr < UZDUOTYS.length) rodytiUzduoti();
+    if (nr < uzd.length) rodytiUzduoti();
     else baigti();
     return;
   }
   patikrinta = true;
-  const teisinga = teisingaForma(u);
+  const teisinga = u.forma;
   const zenklas = PRIEGAIDES[pasPrieg].zenklas;
   const atsakyta = u.skiemenys
     .map((s, i) => (i === pasSkiem ? sudeti(s, vietaSkiemenyje(u, i), zenklas) : s))
@@ -118,7 +146,7 @@ $('toliau').addEventListener('click', () => {
   $('atsiliepimas').innerHTML = gerai
     ? 'Teisingai! <span class="forma">' + apsaugoti(teisinga) + '</span>'
     : 'Ne visai. Teisingai: <span class="forma">' + apsaugoti(teisinga) + '</span>';
-  $('toliau').textContent = nr + 1 < UZDUOTYS.length ? 'Toliau' : 'Baigti';
+  $('toliau').textContent = nr + 1 < uzd.length ? 'Toliau' : 'Baigti';
   piesti();
 });
 

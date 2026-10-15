@@ -127,3 +127,43 @@ td { padding: 12px 14px; border-top: 1px solid #EEEBE3; vertical-align: top; }
   .santrauka { grid-template-columns: 1fr; }
   .pavadinimas { font-size: 28px; }
 }
+
+/* Mokytojo skirtukai */
+.serif { font-family: var(--serif); font-size: 1.1em; }
+.skirtukai-juosta { display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap; border-bottom: 1px solid var(--linija); padding-bottom: 12px; }
+.skirtukai { display: flex; gap: 6px; }
+.skirtukas { height: 44px; padding: 0 18px; border-radius: 12px; border: none; background: transparent; font-size: 15px; font-weight: 500; color: var(--pilka); display: flex; align-items: center; gap: 8px; }
+.skirtukas.aktyvus { background: var(--rasalas); color: var(--fonas); }
+.skaicius { background: var(--klaida); color: #fff; font-size: 12px; font-weight: 600; border-radius: 999px; padding: 2px 8px; }
+
+/* Užduočių redaktorius */
+.zenklu-juosta { position: sticky; top: 8px; z-index: 3; display: flex; align-items: center; gap: 8px; flex-wrap: wrap; padding: 10px 14px; box-shadow: 0 6px 18px rgba(0,0,0,.06); }
+.zenklu-juosta button { height: 44px; min-width: 56px; padding: 0 12px; border-radius: 10px; border: 1px solid var(--linija); background: var(--fonas); font-family: var(--serif); font-size: 22px; color: var(--rasalas); display: flex; align-items: center; gap: 6px; }
+.zenklu-juosta button small { font-family: var(--sans); font-size: 12px; color: var(--pilka); }
+.uzd-sarasas { display: flex; flex-direction: column; gap: 12px; }
+.uzd-kortele { background: var(--kortele); border: 1px solid var(--linija); border-radius: 16px; padding: 16px 18px; display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.4fr); gap: 16px 20px; }
+.uzd-kortele.laukia { border: 2px solid #E0A100; background: #FFFBEB; }
+.uzd-kortele.klaidinga { border: 2px solid var(--klaida); }
+.uzd-kortele .laukas input, .uzd-kortele .laukas textarea { font-size: 16px; }
+.uzd-kortele textarea { min-height: 84px; border-radius: 12px; border: 1px solid #CFCBC0; padding: 10px 14px; font-family: var(--sans); line-height: 1.5; resize: vertical; }
+.uzd-kortele textarea:focus { outline: 3px solid var(--akcentas-sviesus); border-color: var(--akcentas); }
+.uzd-kortele .zodzio-laukas { font-family: var(--serif); font-size: 22px !important; }
+.uzd-perziura { display: flex; flex-direction: column; gap: 10px; }
+.perziuros-skiemenys { display: flex; gap: 6px; flex-wrap: wrap; }
+.perziuros-skiemenys span { min-width: 48px; height: 48px; padding: 0 10px; border-radius: 12px; border: 1px solid var(--linija); background: var(--fonas); display: flex; align-items: center; justify-content: center; font-family: var(--serif); font-size: 22px; color: #8A8880; }
+.perziuros-skiemenys span.kirc { border: 2px solid var(--akcentas); background: var(--akcentas-sviesus); color: var(--rasalas); font-weight: 600; }
+.perziuros-forma { font-family: var(--serif); font-size: 30px; font-weight: 600; line-height: 1.1; }
+.perziuros-klaida { color: var(--klaida); font-weight: 500; font-size: 14px; margin: 0; }
+.uzd-veiksmai { grid-column: 1 / -1; display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; border-top: 1px solid #EEEBE3; padding-top: 12px; }
+.jungiklis { display: flex; align-items: center; gap: 10px; font-size: 15px; font-weight: 500; cursor: pointer; min-height: 44px; }
+.jungiklis input { width: 22px; height: 22px; accent-color: var(--gerai); }
+.busenos-zyme { font-size: 12px; font-weight: 600; letter-spacing: .04em; text-transform: uppercase; padding: 4px 10px; border-radius: 999px; }
+.busenos-zyme.laukia { background: #FFE9A8; color: #6B4E00; }
+.busenos-zyme.patvirtinta { background: var(--gerai-fonas); color: var(--gerai); }
+.tekstinis-mygtukas { height: 44px; border: none; background: transparent; color: var(--klaida); font-size: 14px; font-weight: 500; padding: 0 8px; }
+.saugojimo-juosta { position: sticky; bottom: 0; z-index: 3; display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; background: var(--fonas); border-top: 1px solid var(--linija); padding: 14px 0 18px; }
+.saugojimo-juosta.pakeista #saugojimo-busena { color: #8A5A00; font-weight: 600; }
+
+@media (max-width: 760px) {
+  .uzd-kortele { grid-template-columns: 1fr; }
+}
