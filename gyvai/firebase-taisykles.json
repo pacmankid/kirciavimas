@@ -1,0 +1,44 @@
+{
+  "rules": {
+    "pamokos": {
+      ".read": "auth != null && auth.token.email === 'MOKYTOJO@EL.PASTAS' && auth.token.email_verified === true",
+      ".write": "auth != null && auth.token.email === 'MOKYTOJO@EL.PASTAS' && auth.token.email_verified === true",
+      "$id": { ".read": "auth != null" }
+    },
+    "skaidres": {
+      ".write": "auth != null && auth.token.email === 'MOKYTOJO@EL.PASTAS' && auth.token.email_verified === true",
+      "$id": { ".read": "auth != null" }
+    },
+    "kodai": {
+      ".write": "auth != null && auth.token.email === 'MOKYTOJO@EL.PASTAS' && auth.token.email_verified === true",
+      "$kodas": { ".read": "auth != null" }
+    },
+    "gyvai": {
+      ".write": "auth != null && auth.token.email === 'MOKYTOJO@EL.PASTAS' && auth.token.email_verified === true",
+      "$kodas": { ".read": "auth != null" }
+    },
+    "dalyviai": {
+      "$kodas": {
+        ".read": "auth != null && auth.token.email === 'MOKYTOJO@EL.PASTAS' && auth.token.email_verified === true",
+        ".write": "auth != null && auth.token.email === 'MOKYTOJO@EL.PASTAS' && auth.token.email_verified === true",
+        "$uid": {
+          ".write": "auth != null && auth.uid === $uid && root.child('kodai').child($kodas).exists()",
+          "vardas": { ".validate": "newData.isString() && newData.val().length <= 40" },
+          "klase": { ".validate": "newData.isString() && newData.val().length <= 10" }
+        }
+      }
+    },
+    "atsakymai": {
+      "$kodas": {
+        ".read": "auth != null && auth.token.email === 'MOKYTOJO@EL.PASTAS' && auth.token.email_verified === true",
+        ".write": "auth != null && auth.token.email === 'MOKYTOJO@EL.PASTAS' && auth.token.email_verified === true",
+        "$nr": {
+          "$uid": {
+            ".read": "auth != null && auth.uid === $uid",
+            ".write": "auth != null && auth.uid === $uid && !data.exists() && root.child('gyvai').child($kodas).exists()"
+          }
+        }
+      }
+    }
+  }
+}

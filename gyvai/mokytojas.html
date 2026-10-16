@@ -1,0 +1,190 @@
+<!doctype html>
+<html lang="lt">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Pamokų pultas</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../stilius.css">
+<link rel="stylesheet" href="gyvai.css">
+<script src="../nustatymai.js"></script>
+<script>
+  if (typeof FIREBASE_CONFIG !== 'undefined' && FIREBASE_CONFIG) {
+    for (const m of ['app', 'auth', 'database']) document.write('<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-' + m + '-compat.js"><\/script>');
+  }
+</script>
+</head>
+<body>
+<main class="puslapis platus">
+
+  <header class="skirtukai-juosta">
+    <p class="logo">Kirčiuoklis<span>´</span> <span class="pagalba" style="font-family:var(--sans); font-size:15px">· pamokų pultas</span></p>
+    <div style="display:flex; gap:10px; align-items:center">
+      <span class="demo-zyme" id="demo-zyme" hidden>Demo režimas</span>
+      <span class="pagalba" id="mokytojo-pastas"></span>
+    </div>
+  </header>
+
+  <!-- Prisijungimas (tik su Firebase) -->
+  <section id="m-prisijungimas" hidden style="max-width:420px; display:flex; flex-direction:column; gap:14px; padding-top:20px">
+    <h1 class="pavadinimas">Prisijunk kaip mokytojas</h1>
+    <p class="pagalba">Naudok Google paskyrą, kuriai suteiktos mokytojo teisės.</p>
+    <button class="mygtukas" id="prisijungti-google">Prisijungti su Google</button>
+    <p class="klaida-tekstas" id="prisijungimo-klaida" aria-live="polite"></p>
+  </section>
+
+  <!-- Pamokų sąrašas -->
+  <section id="m-pamokos" hidden style="display:flex; flex-direction:column; gap:18px">
+    <div class="virsus">
+      <h1 class="pavadinimas" style="font-size:30px">Mano pamokos</h1>
+      <button class="mygtukas" id="nauja-pamoka">+ Sukurti pamoką</button>
+    </div>
+    <div class="pamoku-sarasas" id="pamoku-sarasas"></div>
+  </section>
+
+  <!-- Pamokos redaktorius -->
+  <section id="m-redaktorius" hidden class="redaktorius">
+    <div class="virsus">
+      <h1 class="pavadinimas" style="font-size:30px" id="redaktoriaus-antraste">Nauja pamoka</h1>
+      <button class="mygtukas antrinis" id="atsaukti-redagavima" style="height:44px; font-size:15px">Atgal į pamokas</button>
+    </div>
+
+    <div class="kortele" style="display:flex; flex-direction:column; gap:14px">
+      <div class="formos-eile">
+        <div class="laukas">
+          <label for="r-pavadinimas">Pamokos pavadinimas</label>
+          <input id="r-pavadinimas" maxlength="80" placeholder="pvz., Priegaidės. 5A">
+        </div>
+        <div class="laukas">
+          <label for="r-kodas">Prisijungimo kodas</label>
+          <div style="display:flex; gap:8px">
+            <div class="kodo-laukas" style="flex:1"><span aria-hidden="true">#</span><input id="r-kodas" maxlength="30" autocomplete="off" spellcheck="false" style="height:52px !important; font-size:18px !important"></div>
+            <button class="mygtukas antrinis" id="r-generuoti" type="button" style="height:52px; font-size:14px">Naujas</button>
+          </div>
+        </div>
+      </div>
+      <p class="pagalba">Kodą padiktuosi mokiniams. Raidės be lietuviškų ženklų, pvz. <b>lietuva</b>.</p>
+    </div>
+
+    <div class="kortele">
+      <p class="antraste">Skaidrės</p>
+      <div class="failo-laukas" style="margin-top:12px">
+        <label class="mygtukas antrinis" style="display:inline-flex; align-items:center; height:48px; font-size:15px; cursor:pointer">
+          Įkelti PDF arba paveikslėlius
+          <input type="file" id="r-failai" accept="application/pdf,image/*" multiple class="paslepta">
+        </label>
+        <span class="pagalba" id="r-skaidriu-busena">PowerPoint ar Keynote skaidres išsaugok kaip PDF.</span>
+        <button class="tekstinis-mygtukas" id="r-isvalyti-skaidres" type="button" hidden>Pašalinti visas skaidres</button>
+      </div>
+      <div class="skaidriu-tinklelis" id="r-skaidres"></div>
+    </div>
+
+    <div class="kortele">
+      <p class="antraste">Pamokos užduotys (<span id="r-uzd-sk">0</span>)</p>
+      <div id="r-uzduotys" class="banko-sarasas" style="max-height:none"></div>
+      <details style="margin-top:14px">
+        <summary style="cursor:pointer; font-weight:600; min-height:32px">Pridėti iš užduočių banko</summary>
+        <p class="pagalba" id="r-banko-busena" style="margin-top:8px">Įkeliama…</p>
+        <div id="r-bankas" class="banko-sarasas"></div>
+      </details>
+      <details style="margin-top:10px">
+        <summary style="cursor:pointer; font-weight:600; min-height:32px">Sukurti naują užduotį</summary>
+        <div class="formos-eile" style="margin-top:10px">
+          <div class="laukas"><label for="r-n-zodis">Žodis (pvz. vã-ka-ras)</label><input id="r-n-zodis" style="font-family:var(--serif); font-size:20px"></div>
+          <div class="laukas"><label for="r-n-sakinys">Sakinys su ___</label><input id="r-n-sakinys"></div>
+        </div>
+        <div class="laukas" style="margin-top:10px"><label for="r-n-kodel">Kodėl taip kirčiuojama</label><input id="r-n-kodel"></div>
+        <div class="zenklu-juosta" style="position:static; box-shadow:none; padding:10px 0" role="toolbar" aria-label="Kirčio ženklai">
+          <button type="button" data-iterpti="&#x300;" aria-label="Kairinis kirtis">à</button>
+          <button type="button" data-iterpti="&#x301;" aria-label="Dešininis kirtis">á</button>
+          <button type="button" data-iterpti="&#x303;" aria-label="Riestinis kirtis">ã</button>
+          <button type="button" data-iterpti="-" aria-label="Skiemenų brūkšnelis">-</button>
+          <button type="button" class="mygtukas mazas" id="r-n-prideti" style="margin-left:auto; font-family:var(--sans)">Pridėti į pamoką</button>
+        </div>
+        <p class="klaida-tekstas" id="r-n-klaida"></p>
+      </details>
+    </div>
+
+    <div class="saugojimo-juosta">
+      <span class="pagalba" id="r-busena" aria-live="polite"></span>
+      <button class="mygtukas" id="r-saugoti">Išsaugoti pamoką</button>
+    </div>
+  </section>
+
+  <!-- Gyva pamoka -->
+  <section id="m-gyvai" hidden style="display:flex; flex-direction:column; gap:18px">
+    <div class="pulto-virsus">
+      <div>
+        <p class="pagalba">Mokiniai jungiasi adresu <b id="g-adresas"></b></p>
+        <h1 class="pavadinimas" style="font-size:28px; margin-top:4px" id="g-pavadinimas"></h1>
+      </div>
+      <div style="display:flex; align-items:center; gap:12px; flex-wrap:wrap">
+        <span class="didelis-kodas" id="g-kodas"></span>
+        <button class="mygtukas pavojingas" id="g-baigti" style="height:48px; font-size:15px">Baigti pamoką</button>
+      </div>
+    </div>
+
+    <div class="kortele patvirtinimas" id="g-baigti-patv" hidden role="alertdialog" aria-labelledby="g-baigti-tekstas">
+      <p id="g-baigti-tekstas" style="margin:0; font-size:16px; font-weight:500">Baigti pamoką? Mokiniai pamatys savo rezultatus.</p>
+      <label class="jungiklis" id="g-siusti-eilute"><input type="checkbox" id="g-siusti" checked> Išsaugoti rezultatus į Google lentelę</label>
+      <div style="display:flex; gap:10px; flex-wrap:wrap">
+        <button class="mygtukas pavojingas mazas" id="g-baigti-taip">Taip, baigti</button>
+        <button class="mygtukas antrinis mazas" id="g-baigti-ne">Atšaukti</button>
+      </div>
+    </div>
+
+    <div class="pultas">
+      <div style="display:flex; flex-direction:column; gap:14px">
+        <div class="perziura" id="g-perziura" aria-live="polite"></div>
+        <div class="valdikliai">
+          <button class="mygtukas antrinis" id="g-atgal" aria-label="Ankstesnė skaidrė">◀</button>
+          <span class="skaidres-nr" id="g-skaidres-nr"></span>
+          <button class="mygtukas" id="g-pirmyn" aria-label="Kita skaidrė">Kita skaidrė ▶</button>
+          <button class="mygtukas antrinis" id="g-laukti">Laukimo langas</button>
+        </div>
+        <p class="pagalba">Klavišai: → / PageDown – kita skaidrė, ← / PageUp – ankstesnė, B – laukimo langas. Veikia ir skaidrių pultelis.</p>
+        <div class="miniaturos" id="g-miniaturos" aria-label="Skaidrės"></div>
+      </div>
+
+      <div class="soninis">
+        <div class="kortele" id="g-statistika">
+          <span class="antraste">Prisijungę</span>
+          <p class="skaitliukas" style="margin:6px 0 0" id="g-prisijunge">0</p>
+        </div>
+        <div class="kortele">
+          <span class="antraste">Užduotys</span>
+          <div id="g-uzduotys" style="margin-top:6px"></div>
+          <button class="mygtukas antrinis mazas" id="g-savo-tempu" style="margin-top:10px; width:100%">Visos užduotys – savo tempu</button>
+        </div>
+        <div class="kortele">
+          <span class="antraste">Mokiniai</span>
+          <ul class="dalyviai" id="g-dalyviai"></ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Po pamokos -->
+  <section id="m-pabaiga" hidden style="display:flex; flex-direction:column; gap:18px">
+    <div class="virsus">
+      <h1 class="pavadinimas" style="font-size:30px">Pamokos rezultatai</h1>
+      <button class="mygtukas" id="p-grizti">Grįžti į pamokas</button>
+    </div>
+    <p class="pagalba" id="p-busena" aria-live="polite"></p>
+    <div class="lenteles-dezute">
+      <table>
+        <thead><tr><th>Mokinys</th><th>Klasė</th><th>Rezultatas</th><th>Klaidos</th></tr></thead>
+        <tbody id="p-eilutes"></tbody>
+      </table>
+    </div>
+  </section>
+
+</main>
+<script src="../uzduotys.js"></script>
+<script src="../bendra.js"></script>
+<script src="rysys.js"></script>
+<script src="pultas.js"></script>
+</body>
+</html>

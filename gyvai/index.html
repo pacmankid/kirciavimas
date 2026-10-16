@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="lt">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Prisijungti prie pamokos</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../stilius.css">
+<link rel="stylesheet" href="gyvai.css">
+<script src="../nustatymai.js"></script>
+<script>
+  if (typeof FIREBASE_CONFIG !== 'undefined' && FIREBASE_CONFIG) {
+    for (const m of ['app', 'auth', 'database']) document.write('<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-' + m + '-compat.js"><\/script>');
+  }
+</script>
+</head>
+<body>
+
+<!-- 1. Prisijungimas -->
+<main class="puslapis" id="prisijungimas">
+  <p class="logo">Kirčiuoklis<span>´</span></p>
+  <span class="demo-zyme" id="demo-zyme" hidden>Demo režimas: veikia tik šiame kompiuteryje</span>
+  <h1 class="pavadinimas" style="margin-top:20px">Prisijunk prie pamokos</h1>
+  <p class="pagalba" style="margin-top:6px">Įvesk kodą, kurį pasakė mokytojas.</p>
+  <form id="prisijungimo-forma" class="kortele" style="margin-top:18px; display:flex; flex-direction:column; gap:14px">
+    <div class="laukas">
+      <label for="kodas">Pamokos kodas</label>
+      <div class="kodo-laukas"><span aria-hidden="true">#</span><input id="kodas" autocomplete="off" autocapitalize="none" spellcheck="false" maxlength="30" placeholder="lietuva" required></div>
+    </div>
+    <div class="laukas">
+      <label for="vardas">Vardas ir pavardės raidė</label>
+      <input id="vardas" autocomplete="off" maxlength="40" placeholder="pvz., Ugnė K." required>
+    </div>
+    <div class="laukas">
+      <label for="klase">Klasė</label>
+      <select id="klase" required><option value="">Pasirink klasę</option></select>
+    </div>
+    <p class="klaida-tekstas" id="prisijungimo-klaida" aria-live="polite"></p>
+    <button class="mygtukas" type="submit" id="prisijungti">Prisijungti</button>
+  </form>
+</main>
+
+<!-- 2. Pamoka -->
+<div id="pamoka" class="ekranas-pilnas" hidden>
+  <div class="virsutine">
+    <span><span class="taskas" aria-hidden="true"></span><b id="pamokos-pavadinimas"></b></span>
+    <span id="mokinio-vardas"></span>
+  </div>
+
+  <section id="r-laukti" class="laukimo-langas" hidden>
+    <div class="pulsas" aria-hidden="true"></div>
+    <h1 id="laukti-antraste">Žiūrėk į mokytoją</h1>
+    <p id="laukti-tekstas">Netrukus čia kažkas atsiras.</p>
+  </section>
+
+  <section id="r-skaidre" class="skaidres-langas" hidden>
+    <img id="skaidre" alt="">
+    <button class="ikonos-mygtukas" id="pilnas-ekranas" aria-label="Visas ekranas">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></svg>
+    </button>
+  </section>
+
+  <section id="r-uzduotis" class="uzduoties-langas" hidden>
+    <div class="eiga" id="savo-tempu-eiga" hidden>
+      <div class="eiga-juosta"><div class="eiga-uzpildas" id="st-uzpildas"></div></div>
+      <span class="eiga-tekstas" id="st-tekstas"></span>
+    </div>
+    <div id="uzduoties-vieta" style="display:flex; flex-direction:column; gap:18px"></div>
+  </section>
+
+  <section id="r-suvestine" class="uzduoties-langas" hidden>
+    <div class="kortele centre" style="display:flex; flex-direction:column; gap:10px; align-items:center; padding:28px 20px">
+      <p class="antraste">Tavo rezultatas</p>
+      <p class="taskai" id="taskai"></p>
+      <p class="pagalba" id="suvestines-tekstas">Palauk, ką toliau parodys mokytojas.</p>
+    </div>
+    <div class="kortele">
+      <p class="antraste" style="margin-bottom:12px">Kodėl taip kirčiuojama</p>
+      <ul class="paaiskinimai" id="paaiskinimai"></ul>
+    </div>
+  </section>
+</div>
+
+<script src="../uzduotys.js"></script>
+<script src="../bendra.js"></script>
+<script src="rysys.js"></script>
+<script src="uzduotis.js"></script>
+<script src="mokinys.js"></script>
+</body>
+</html>

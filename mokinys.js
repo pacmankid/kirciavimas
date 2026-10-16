@@ -43,9 +43,11 @@ function rodyti(ekranas) {
 
 // ---------- Pradžia ----------
 
+KLASES.forEach((k) => $('klase').insertAdjacentHTML('beforeend', `<option>${apsaugoti(k)}</option>`));
 try {
   $('vardas').value = localStorage.getItem('kirc-vardas') || '';
-  $('klase').value = localStorage.getItem('kirc-klase') || '';
+  const k = localStorage.getItem('kirc-klase');
+  if (KLASES.includes(k)) $('klase').value = k;
 } catch {}
 
 $('pradzios-forma').addEventListener('submit', (e) => {
